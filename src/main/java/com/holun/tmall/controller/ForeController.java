@@ -84,8 +84,9 @@ public class ForeController {
     @GetMapping("/foreLogout")
     public String logout() {
         Subject subject = SecurityUtils.getSubject();
-        //开启注销功能
-        subject.logout();
+        //对已认证的用户,提供注销功能
+        if (subject.isAuthenticated())
+            subject.logout();
         return "redirect:foreHome";
     }
 

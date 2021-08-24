@@ -48,7 +48,8 @@ public class ForeRestController {
 
     @PostMapping("/foreLogin")
     public String login(String name, String pwd, HttpSession session) {
-        //获取当前用户
+        name = HtmlUtils.htmlEscape(name);
+        //创建subject对象
         Subject subject = SecurityUtils.getSubject();
         //以当前用户的用户名、密码为参数，生成口令
         UsernamePasswordToken token = new UsernamePasswordToken(name, pwd);
@@ -57,6 +58,7 @@ public class ForeRestController {
             //使用口令登录，进行身份认证
             subject.login(token);
             User user = userService.queryUserByName(name);
+            //subject.getSession().setAttribute("user", user);
             session.setAttribute("user", user);
 
             return "success";
@@ -83,6 +85,14 @@ public class ForeRestController {
         //若注册时，输入的用户名不存在，就将这个用户添加到user表中，返回success
         userService.addUser(user);
         return "success";
+    }
+
+    @GetMapping("/foreCheckLogin")
+    public String checkLogin() {
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.isAuthenticated())
+            return "success";
+        return "fail";
     }
 
     @PostMapping("/foreAddCart")
@@ -136,14 +146,4 @@ public class ForeRestController {
 
         return "success";
     }
-
-    @GetMapping("/foreCheckLogin")
-    public String checkLogin(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-
-        if (user == null)
-            return "fail";
-        return "success";
-    }
-
 }
