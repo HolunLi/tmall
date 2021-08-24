@@ -1,6 +1,18 @@
 <!--suppress ALL-->
 
 <div id="html" class="reviewDiv">
+  <script>
+    $(function () {
+      $("#reviewForm").submit(function () {
+        var content = $("#reviewArea").val();
+        if (content.length == 0) {
+          alert("评价不能为空")
+          return false;
+        }
+      })
+    })
+  </script>
+
   <div class="reviewProductInfoDiv">
     <div class="reviewProductInfoImg"><img width="400px" height="400px" th:src="@{'/img/productimage/single/'+${product.firstProductImage.id}+'.jpg'}"></div>
     <div class="reviewProductInfoRightDiv">
@@ -54,12 +66,12 @@
     </div>
 
     <div class="makeReviewDiv" th:if="${param.showonly == null}">
-      <form method="post" th:action="@{/foreDoReview}">
+      <form id="reviewForm" method="post" th:action="@{/foreDoReview}">
         <div class="makeReviewText">其他买家，需要你的建议哦！</div>
         <table class="makeReviewTable">
           <tr>
             <td class="makeReviewTableFirstTD">评价商品</td>
-            <td><textarea name="content"></textarea></td>
+            <td><textarea id="reviewArea" name="content"></textarea></td>
           </tr>
         </table>
         <div class="makeReviewButtonDiv">
