@@ -1,0 +1,56 @@
+server:
+  #设置服务器运行时，占用的端口号
+  port: 8899
+  servlet:
+    #设置servlet容器的上下文路径
+    context-path: /tmall
+    #设置session的超时时间（用户无操作，超出该时间，session就会失效）
+    session:
+      timeout: 30m
+
+spring:
+  #关闭thymeleaf模板引擎的缓存
+  thymeleaf:
+    cache: false
+    servlet:
+      content-type: text/html
+    mode: HTML
+    encoding: UTF-8
+
+  datasource:
+    username: root
+    password: haolun
+    url: jdbc:mysql://localhost:3306/tmall?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      #以下都是druid数据源专有的配置
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      useGlobalDataSourceStat: true
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+
+mybatis:
+  #指明mapper映射文件的位置
+  mapper-locations: classpath:mapper/*.xml
+  #为指定包下的实体类取别名
+  type-aliases-package: con.holun.entity
+  configuration:
+    #使用jdbc的getGeneratedKeys获取数据库自增主键值
+    use-generated-keys: true
+    #使用列别名替换列名
+    use-column-label: true
+    #开启驼峰命名转换:Table{create_time} -> Entity{createTime}
+    map-underscore-to-camel-case: true
+
+

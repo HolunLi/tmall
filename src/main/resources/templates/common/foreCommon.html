@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<!--suppress ALL-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!--foreHeader并不是一个具体的前端页面，在foreHeader中引入js,css，自定义javascript函数等-->
+<head th:fragment="foreHeader">
+  <link rel="icon" th:href="@{/img/icon/favicon.ico}" type="image/x-icon" />
+  <script th:src="@{/js/jquery/2.2.4/jquery-2.2.4.js}"></script>
+  <link th:href="@{/css/bootstrap/3.3.6/bootstrap.min.css}" rel="stylesheet">
+  <script th:src="@{/js/bootstrap/3.3.6/bootstrap.min.js}"></script>
+  <link th:href="@{/css/fore/style.css}" rel="stylesheet">
+  <script>
+    $(function(){
+
+      $("a[href='#nowhere']").click(function(){
+        alert("模仿天猫的连接，并没有跳转到实际的页面");
+      });
+
+      $("a.wangwanglink").click(function(){
+        alert("模仿旺旺的图标，并不会打开旺旺");
+      });
+
+      $("a[href='#notImplementLink']").click(function(){
+        alert("这个功能没做，蛤蛤~");
+      });
+
+    });
+  </script>
+</head>
+
+<!--天猫前台顶部导航栏-->
+<div th:fragment="foreNavigator">
+  <nav class="top">
+    <a th:href="@{/foreHome}">
+      <span style="color:#C40000;margin:0px" class=" glyphicon glyphicon-home redColor"></span>
+      天猫首页
+    </a>&nbsp;
+
+    <span>喵，欢迎来天猫</span>
+
+    <span th:if="${session.user == null}">
+       <a th:href="@{/foreToLoginPage}">请登录</a>&nbsp;
+       <a th:href="@{/foreToRegisterPage}">免费注册</a>
+    </span>
+
+    <span th:if="${session.user != null}">
+      <a href="#null" th:text="${session.user.name}"></a>&nbsp;&nbsp;
+      <a th:if="${session.user.role == 'administrator'}" th:href="@{/admin}">进入后台&nbsp;&nbsp;</a>
+      <a th:href="@{/foreLogout}">退出</a>
+    </span>
+
+    <span class="pull-right">
+			<a th:href="@{/foreMyOrder}">我的订单</a>
+			<a th:href="@{/foreCart}">
+			<span style="color:#C40000;margin:0px" class=" glyphicon glyphicon-shopping-cart redColor"></span>
+			购物车<strong th:text="${cartTotalItemNumber}"></strong>件</a>
+    </span>
+  </nav>
+</div>
+
+<!--天猫前台中的搜索框1-->
+<div th:fragment="search">
+  <script>
+    $(function () {
+      $("#searchForm1").submit(function () {
+        var keyword = $("#searchBox1").val();
+        if (keyword.length == 0) {
+          $("#searchBox1").attr("placeholder", "搜索框不能为空");
+          return false;
+        }
+      })
+    })
+  </script>
+
+  <a th:href="@{/foreHome}">
+    <img id="logo" th:src="@{/img/site/logo.gif}" class="logo">
+  </a>
+
+  <form id="searchForm1" th:action="@{/foreSearch}" method="get">
+    <div class="searchDiv">
+      <input id="searchBox1" name="keyword" type="text" th:value="${param.keyword}" placeholder="时尚男鞋  太阳镜 ">
+      <!--位于表单中的<button>的type属性，默认为submit-->
+      <button  type="submit" class="searchButton">搜索</button>
+      <div class="searchBelow">
+          <!--在搜索框下面显示categories集合中，第5个到第8个分类的超链接，共4个超链接。 -->
+          <span th:each="category,st : ${categories}" th:if="${st.count>=5 and st.count<=8}">  <!-- st.count表示当前循环是第几次循环-->
+              <a th:text="${category.name}" th:href="@{'/foreCategory/' + ${category.id}}"></a>
+              <span th:if="${st.count != 8}">|</span>
+          </span>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!--天猫前台中的搜索框2-->
+<div th:fragment="simpleSearch">
+  <script>
+    $(function () {
+      $("#searchForm2").submit(function () {
+        var keyword = $("#searchBox2").val();
+        if (keyword.length == 0) {
+          $("#searchBox2").attr("placeholder", "搜索框不能为空");
+          return false;
+        }
+      })
+    })
+  </script>
+
+  <a th:href="@{/foreHome}">
+    <img id="simpleLogo" class="simpleLogo" th:src="@{/img/site/simpleLogo.png}">
+  </a>
+
+  <form id="searchForm2" th:action="@{/foreSearch}" method="get" >
+    <div class="simpleSearchDiv pull-right">
+      <input id="searchBox2" type="text" placeholder="平衡车 原汁机"  th:value="${param.keyword}" name="keyword">
+      <button class="searchButton" type="submit">搜天猫</button>
+      <div class="searchBelow">
+        <!--在搜索框下面显示categories集合中，第8个到第11个分类的超链接，共4个超链接。 -->
+        <span th:each="category,st : ${categories}" th:if="${st.count>=8 and st.count<=11}">  <!-- st.count表示当前循环是第几次循环-->
+            <a th:text="${category.name}" th:href="@{'/foreCategory/' + ${category.id}}"></a>
+            <span th:if="${st.count != 11}">|</span>
+        </span>
+      </div>
+    </div>
+  </form>
+  <div style="clear:both"></div>
+</div>
+
+<!--天猫前台中的页脚-->
+<div id="footer"  class="footer" style="display: block;" th:fragment="footer">
+  <div id="footer_ensure" class="footer_ensure">
+    <a href="#nowhere">
+      <img th:src="@{/img/site/ensure.png}">
+    </a>
+  </div>
+
+  <div class="horizontal_line"></div>
+
+  <div id="footer_desc" class="footer_desc">
+    <div class="descColumn">
+      <span class="descColumnTitle">购物指南</span>
+      <a href="#nowhere" >免费注册</a>
+      <a href="#nowhere" >开通支付宝</a>
+      <a href="#nowhere" >支付宝充值</a>
+    </div>
+    <div class="descColumn">
+      <span class="descColumnTitle">天猫保障</span>
+      <a href="#nowhere" >发票保障</a>
+      <a href="#nowhere" >售后规则</a>
+      <a href="#nowhere" >缺货赔付</a>
+    </div>
+    <div class="descColumn">
+      <span class="descColumnTitle">支付方式</span>
+      <a href="#nowhere" >快捷支付</a>
+      <a href="#nowhere" >信用卡</a>
+      <a href="#nowhere" >余额宝</a>
+      <a href="#nowhere" >蚂蚁花呗</a>
+      <a href="#nowhere" >货到付款</a>
+    </div>
+    <div class="descColumn">
+      <span class="descColumnTitle">商家服务</span>
+      <a href="#nowhere" >天猫规则</a>
+      <a href="#nowhere" >商家入驻</a>
+      <a href="#nowhere" >商家中心</a>
+      <a href="#nowhere" >天猫智库</a>
+      <a href="#nowhere" >物流服务</a>
+      <a href="#nowhere" >喵言喵语</a>
+      <a href="#nowhere" >运营服务</a>
+    </div>
+    <div class="descColumn">
+      <span class="descColumnTitle">手机天猫</span>
+      <a href="#nowhere" ><img th:src="@{/img/site/ma.png}"></a>
+    </div>
+
+  </div>
+
+  <div style="clear:both"></div>
+
+  <div id="copyright" class="copyright">
+    <div class="coptyrightMiddle">
+      <img id="cateye" class="cateye" th:src="@{/img/site/cateye.png}">
+      <div class="white_link" >
+        <a href="#nowhere" style="padding-left:0px" >关于天猫</a>
+        <a href="#nowhere" >商家服务大厅</a>
+        <a href="#nowhere" >开放平台</a>
+        <a href="#nowhere" >诚聘英才</a>
+        <a href="#nowhere" >联系我们</a>
+        <a href="#nowhere" >网站合作</a>
+        <a href="#nowhere" >法律声明</a>
+        <a href="#nowhere" >隐私权政策</a>
+        <a href="#nowhere" >知识产权</a>
+        <a href="#nowhere" >廉正举报</a>
+        <a href="#nowhere" >不正当竞争举报</a>
+      </div>
+      <div class="white_link" >
+        <a href="#nowhere"  style="padding-left:0px" >阿里巴巴集团</a><span class="slash">|</span>
+        <a href="#nowhere" >淘宝网</a><span class="slash">|</span>
+        <a href="#nowhere" >天猫</a><span class="slash">|</span>
+        <a href="#nowhere" > 聚划算</a><span class="slash">|</span>
+        <a href="#nowhere" >全球速卖通</a><span class="slash">|</span>
+        <a href="#nowhere" >阿里巴巴国际交易市场</a><span class="slash">|</span>
+        <a href="#nowhere" >1688</a><span class="slash">|</span>
+        <a href="#nowhere" >阿里妈妈</a><span class="slash">|</span>
+        <a href="#nowhere" >飞猪</a><span class="slash">|</span>
+        <a href="#nowhere" >阿里云计算</a><span class="slash">|</span>
+        <a href="#nowhere" >AliOS</a><span class="slash">|</span>
+        <a href="#nowhere" >阿里通信</a><span class="slash">|</span>
+        <a href="#nowhere" >万网</a><span class="slash">|</span>
+        <a href="#nowhere" >高德</a><span class="slash">|</span>
+        <a href="#nowhere" >UC</a><span class="slash">|</span>
+        <a href="#nowhere" >友盟</a><span class="slash">|</span>
+        <a href="#nowhere" >虾米</a><span class="slash">|</span>
+        <a href="#nowhere" >钉钉</a><span class="slash">|</span>
+        <a href="#nowhere" >支付宝</a><span class="slash">|</span>
+        <a href="#nowhere" >阿里安全</a>
+      </div>
+
+      <div class="license">
+        <span>增值电信业务经营许可证： 浙B2-20110446</span>
+        <span>网络文化经营许可证：浙网文[2015]0295-065号</span>
+        <span>互联网医疗保健信息服务 审核同意书 浙卫网审【2014】6号 </span>
+        <span>互联网药品信息服务资质证书编号：浙-（经营性）-2012-0005</span>
+        <div class="copyRightYear">&copy; 2003-2021 TMALL.COM 版权所有</div>
+        <div>
+          <img th:src="@{/img/site/copyRight1.jpg}">
+          <img th:src="@{/img/site/copyRight2.jpg}">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--分页-->
+<div align="center" class="pageDiv" th:fragment="forePage">
+  <script th:inline="javascript">
+    $(function(){
+      $("ul.pagination li.disabled a").click(function(){
+        return false;
+      })
+
+      /*<![CDATA[*/
+        var currentPage = [[${page.currentPage}]];
+        var totalPage = [[${page.totalPage}]];
+      /*]]>*/
+      $("button.goToPage").hide();
+      $("input.currentPage").keyup(function(){
+        $("button.goToPage").hide();
+
+        var num = $(this).val();
+        if (num.length == 0)
+          return;
+        if(num <= 0 || num > totalPage || num == currentPage || isNaN(num)) {
+          num = currentPage;
+          $(this).val(num);
+          $("button.goToPage").hide();
+        }else
+          $("button.goToPage").show();
+      });
+
+      $("input.currentPage").mouseleave(function(){
+        var num = $(this).val();
+        if (num.length == 0)
+          $(this).val(currentPage);
+      });
+      $("input.currentPage").blur(function(){
+        var num = $(this).val();
+        if (num.length == 0)
+          $(this).val(currentPage);
+      });
+
+      /*<![CDATA[*/
+          var sort = [[${sort}]];
+          var keyword = [[${keyword}]];
+          var pageSize = [[${page.pageSize}]];
+      /*]]>*/
+      $("button.goToPage").click(function () {
+        var num = parseInt($("input.currentPage").val());
+        //计算当前输入的页数，是从第几条数据开始显示
+        var start = num * pageSize - pageSize;
+        if (keyword != null) {
+          var param = "start="+start + "&keyword="+keyword + "&sort="+sort;
+          location.href = "foreSearch?" + param;
+        }else {
+          var param = "start="+start + "&sort="+sort;
+          location.href = "?" + param;
+        }
+      });
+    });
+  </script>
+
+  <nav>
+    <ul class="pagination">
+
+      <!--首页超链接-->
+      <li th:class="${!page.hasPrevious}? 'disabled' : ''">
+        <a th:href="@{'?start=0' + ${page.param}}" aria-label="Previous" >
+          <span aria-hidden="true">首页</span>
+        </a>
+      </li>
+
+      <!--上一页超链接-->
+      <li th:class="${!page.hasPrevious}? 'disabled' : ''">  <!--hasPrevious会的导致isHasPrevious()方法被调用-->
+        <a th:href="@{'?start=' + ${page.start - page.pageSize} + ${page.param}}" aria-label="Previous" >
+          <span aria-hidden="true">上一页</span>
+        </a>
+      </li>
+
+      <!--中间页超链接-->
+      <li th:each="index : ${#numbers.sequence(0, page.totalPage - 1, 1)}" th:class="${index * page.pageSize eq page.start}? 'disabled' : ''">
+        <a th:href="@{'?start=' + ${index * page.pageSize} + ${page.param}}" th:text="${index + 1}"></a>
+      </li>
+
+      <!--下一页超链接-->
+      <li th:class="${!page.hasNext}? 'disabled' : ''">
+        <a th:href="@{'?start=' + ${page.start + page.pageSize} + ${page.param}}" aria-label="Next">
+          <span aria-hidden="true">下一页</span>
+        </a>
+      </li>
+
+      <!-- 尾页超链接-->
+      <li th:class="${!page.hasNext}? 'disabled' : ''"> <!--hasNext会的导致isHasNext()方法被调用-->
+        <a th:href="@{'?start=' + ${page.lastPage} + ${page.param}}" aria-label="Next">
+          <span aria-hidden="true">尾页</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div style="font-size:13px; color: gray;">
+    当前是第 <input class="currentPage" style="width: 32px;height: 15px;line-height: 15px;text-align:center;" th:value="${page.currentPage}"> 页
+    <button class="goToPage" style="width: 35px;height: 19px; border: none;">GO&nbsp;</button>
+    &nbsp;/ &nbsp;共 [[${page.totalPage}]] 页
+  </div>
+</div>
+
+<!--登录模态框/窗口（当用户在未登录状态，于产品页面点击"立即购买"或"加入购物车"链接时，会弹出该模态框）-->
+<div class="modal " id="loginModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog loginDivInProductPageModalDiv">
+    <div class="modal-content">
+      <div class="loginDivInProductPage">
+        <div class="loginErrorMessageDiv">
+          <div class="alert alert-danger" >
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+            <span class="errorMessage"></span>
+          </div>
+        </div>
+
+        <div class="login_acount_text">账户登录</div>
+        <div class="loginInput ">
+							<span class="loginInputIcon ">
+								<span class=" glyphicon glyphicon-user"></span>
+							</span>
+          <input id="name" type="text" placeholder="手机/会员名/邮箱"  >
+        </div>
+        <div class="loginInput ">
+							<span class="loginInputIcon ">
+								<span class=" glyphicon glyphicon-lock"></span>
+							</span>
+          <input id="pwd" type="password" placeholder="密码" >
+        </div>
+        <span class="text-danger">不要输入真实的天猫账号密码</span><br><br>
+        <div>
+          <a href="#notImplementLink">忘记登录密码</a> <!-- 该功能没有做 -->
+          <a th:href="@{/foreToRegisterPage}" class="pull-right">免费注册</a>
+        </div>
+        <div style="margin-top:20px">
+          <button class="btn btn-block redButton loginSubmitButton" type="submit">登录</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--删除模态框/窗口（当用户在我的订单页面,和购物车页面进行删除操作的时候，就会弹出该模态框。）-->
+<div class="modal" id="deleteConfirmModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog deleteConfirmModalDiv">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button data-dismiss="modal" class="close" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">确认删除？</h4>
+      </div>
+      <div class="modal-footer">
+        <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+        <button class="btn btn-primary deleteConfirmButton" id="submit" type="button">确认</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</html>

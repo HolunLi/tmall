@@ -1,0 +1,26 @@
+<!--suppress ALL-->
+
+<div id="html" class="searchProducts">
+    <div class="productUnit2" th:price="${product.promotePrice}" th:each="product : ${products}">
+      <a th:href="@{'/foreProduct/' + ${product.id}}">
+        <img class="productImage" th:if="${product.firstProductImage != null}" th:src="@{'/img/productimage/single/'+${product.firstProductImage.id}+'.jpg'}">
+        <img class="productImage" th:if="${product.firstProductImage == null}" th:src="@{/img/site/picturenotfound.jpg}">
+      </a>
+      <span class="productPrice">¥[[${#numbers.formatDecimal(product.promotePrice,1,'COMMA',2,'POINT')}]]</span>
+      <a class="productLink" th:href="@{'/foreProduct/' + ${product.id}}">
+        [[${#strings.length(product.name) >= 50? #strings.substring(product.name,0,50) : product.name}]]
+      </a>
+
+      <a class="tmallLink" th:href="@{'/foreProduct/' + ${product.id}}">天猫专卖</a>
+
+      <div class="show1 productInfo">
+        <span class="monthDeal ">月成交 <span class="productDealNumber">[[${product.saleCount}]]笔</span></span>
+        <span class="productReview">评价<span class="productReviewNumber">[[${product.reviewCount}]]</span></span>
+        <span class="wangwang"><img th:src="@{/img/site/wangwang.png}"></span>
+      </div>
+    </div>
+
+    <div th:if="${products == null}" class="noMatch">没有满足条件的产品</div>
+    <div style="clear:both"></div>
+    <div th:replace="common/foreCommon :: forePage"></div>
+</div>

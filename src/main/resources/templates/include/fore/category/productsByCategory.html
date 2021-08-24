@@ -1,0 +1,28 @@
+<!--suppress ALL-->
+<!--产品列表-->
+<div class="categoryProducts" th:fragment="html">
+  <!-- 在分类页面，遍历当前分类包含的全部产品，每页显示20个产品-->
+  <div class="productUnit1" th:price="${product.promotePrice}" th:each="product : ${products}">
+    <div class="productUnitFrame">
+      <a th:href="@{'/foreProduct/' + ${product.id}}">
+        <img class="productImage" th:if="${product.firstProductImage != null}" th:src="@{'/img/productimage/single_middle/'+${product.firstProductImage.id}+'.jpg'}">
+        <img class="productImage" th:if="${product.firstProductImage == null}" th:src="@{/img/site/picturenotfound.jpg}">
+      </a>
+      <span class="productPrice">¥[[${#numbers.formatDecimal(product.promotePrice,1,'COMMA',2,'POINT')}]]</span>
+      <a class="productLink" th:href="@{'/foreProduct/' + ${product.id}}">
+        [[${#strings.length(product.name) >= 50? #strings.substring(product.name,0,50) : product.name}]]
+      </a>
+
+      <a  class="tmallLink" th:href="@{'/foreProduct/' + ${product.id}}">天猫专卖</a>
+
+      <div class="show1 productInfo">
+        <span class="monthDeal ">月成交 <span class="productDealNumber">[[${product.saleCount}]]笔</span></span>
+        <span class="productReview">评价<span th:text="${product.reviewCount}" class="productReviewNumber"></span></span>
+        <span class="wangwang"><a class="wangwanglink"><img th:src="@{/img/site/wangwang.png}"></a></span>
+      </div>
+    </div>
+  </div>
+
+  <div style="clear:both"></div>
+  <div th:replace="common/foreCommon :: forePage"></div>
+</div>

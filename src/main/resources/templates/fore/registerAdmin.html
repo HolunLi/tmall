@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<title>天猫管理员注册</title>
+<head th:replace="common/foreCommon :: foreHeader" ></head>
+<body>
+<div id="workingArea">
+  <div th:replace="common/foreCommon :: foreNavigator" ></div>
+  <div th:replace="common/foreCommon :: simpleSearch" ></div>
+  <!--管理员注册业务页面-->
+  <div th:replace="include/fore/loginandregister/registerAdminPage :: #html" ></div>
+  <div th:replace="common/foreCommon :: footer" ></div>
+</div>
+</body>
+</html>

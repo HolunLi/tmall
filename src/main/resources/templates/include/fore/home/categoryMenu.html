@@ -1,0 +1,9 @@
+<!--suppress ALL-->
+<!--竖状分类菜单-->
+<div class="categoryMenu" id="html">
+  <!--遍历所有的分类，但只显示所有分类中的前17个分类-->
+  <div th:each="category,st : ${categories}" th:if="${st.count <= 17}" th:cid="${category.id}" class="eachCategory">
+    <span class="glyphicon glyphicon-link"></span>
+    <a th:text="${category.name}" th:href="@{'/foreCategory/'+${category.id}}"></a>
+  </div>
+</div>

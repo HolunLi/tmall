@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<title>我的订单</title>
+<head th:replace="common/foreCommon :: foreHeader"></head>
+<body>
+    <div id="workingArea">
+      <div th:replace="common/foreCommon :: foreNavigator"></div>
+      <div th:replace="common/foreCommon :: simpleSearch"></div>
+      <!-- 我的订单业务页面 -->
+      <div th:replace="include/fore/cartandorder/myOrderPage :: #html"></div>
+      <div th:replace="common/foreCommon :: #deleteConfirmModal"></div>
+      <div th:replace="common/foreCommon :: footer"></div>
+    </div>
+</body>
+</html>

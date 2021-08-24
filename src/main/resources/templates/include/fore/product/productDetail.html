@@ -1,0 +1,25 @@
+<!--suppress ALL-->
+<!--详情图片-->
+<div class="productDetailDiv" id="html">
+    <div class="productDetailTopPart">
+        <a href="#null" class="productDetailTopPartSelectedLink selected">商品详情</a>
+        <a href="#null" class="productDetailTopReviewLink">累计评价 <span th:text="${product.reviewCount}" class="productDetailTopReviewLinkNumber"></span></a>
+    </div>
+
+    <div class="productParamterPart">
+        <div class="productParamter">产品参数：</div>
+
+        <div class="productParamterList">
+            <!--遍历当前产品的所有属性的值-->
+            <span th:each="propertyValue : ${propertyValues}" th:if="${propertyValue.value != null}">
+                [[${propertyValue.property.name}]]:  [[${#strings.length(propertyValue.value) >= 10? #strings.substring(propertyValue.value,0,10) : propertyValue.value}]]
+            </span>
+        </div>
+        <div style="clear:both"></div>
+    </div>
+
+    <div class="productDetailImagesPart">
+        <!--遍历当前产品的所有详情图片-->
+        <img th:each="pi : ${product.productDetailImages}" th:if="${pi != null}" th:src="@{'/img/productimage/detail/'+${pi.id}+'.jpg'}">
+    </div>
+</div>

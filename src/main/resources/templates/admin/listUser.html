@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<title>用户管理</title>
+<head th:replace="common/adminCommon :: adminHeader"></head>
+<body>
+<div th:replace="common/adminCommon :: adminNavigator"></div>
+
+<div class="workingArea">
+  <h1 class="label label-info" >用户管理</h1>
+  <br>
+  <br>
+
+  <div class="listDataTableDiv">
+    <table class="table table-striped table-bordered table-hover  table-condensed">
+      <thead>
+      <tr class="success">
+        <th>ID</th>
+        <th>用户名称</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr th:each="user : ${users}">
+          <td th:text="${user.id}"></td>
+          <td th:text="${user.name}"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div th:replace="common/adminCommon :: adminPage"></div>
+
+</div>
+
+</body>
+</html>

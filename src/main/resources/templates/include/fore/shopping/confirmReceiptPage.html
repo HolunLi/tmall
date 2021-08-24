@@ -1,0 +1,73 @@
+<!--suppress ALL-->
+
+<div id="html" class="confirmPayPageDiv">
+  <div class="confirmPayImageDiv">
+    <img th:src="@{/img/site/comformPayFlow.png}">
+    <div  class="confirmPayTime1">
+      [[${#dates.format(order.createDate, 'yyyy-MM-dd HH:mm:ss')}]]
+    </div>
+    <div  class="confirmPayTime2">
+      [[${#dates.format(order.payDate, 'yyyy-MM-dd HH:mm:ss')}]]
+    </div>
+    <div class="confirmPayTime3">
+      [[${#dates.format(order.deliveryDate, 'yyyy-MM-dd HH:mm:ss')}]]
+    </div>
+  </div>
+
+  <div class="confirmPayOrderInfoDiv">
+    <div class="confirmPayOrderInfoText">我已收到货，同意支付宝付款</div>
+  </div>
+
+  <div class="confirmPayOrderItemDiv">
+    <div class="confirmPayOrderItemText">订单信息</div>
+    <table class="confirmPayOrderItemTable">
+      <thead>
+      <th colspan="2">宝贝</th>
+      <th width="120px">单价</th>
+      <th width="120px">数量</th>
+      <th width="120px">商品总价 </th>
+      <th width="120px">运费</th>
+      </thead>
+        <tr th:each="oi : ${order.orderItems}">
+          <td><img width="50px" th:src="@{'/img/productimage/single_middle/'+${oi.product.firstProductImage.id}+'.jpg'}"></td>
+          <td class="confirmPayOrderItemProductLink">
+            <a th:href="@{'/foreProduct/'+${oi.pid}}" th:text="${oi.product.name}"></a>
+          </td>
+          <td>￥[[${#numbers.formatDecimal(oi.product.promotePrice,1,'COMMA',2,'POINT')}]]</td>
+          <td th:text="${oi.number}"></td>
+          <td><span class="conformPayProductPrice">￥[[${#numbers.formatDecimal(oi.product.promotePrice*oi.number,1,'COMMA',2,'POINT')}]]</span></td>
+          <td><span>快递 ： 0.00 </span></td>
+        </tr>
+    </table>
+
+    <div class="confirmPayOrderItemText pull-right">
+      实付款： <span class="confirmPayOrderItemSumPrice">￥[[${#numbers.formatDecimal(order.total,1,'COMMA',2,'POINT')}]]</span>
+    </div>
+  </div>
+
+  <div class="confirmPayOrderDetailDiv">
+    <table class="confirmPayOrderDetailTable">
+      <tr>
+        <td>订单编号：</td>
+        <td th:text="${order.orderCode}"><img width="23px" th:src="@{/img/site/confirmOrderTmall.png}"></td>
+      </tr>
+      <tr>
+        <td>卖家昵称：</td>
+        <td>天猫商铺 <span class="confirmPayOrderDetailWangWangGif"></span></td>
+      </tr>
+      <tr>
+        <td>收货信息： </td>
+        <td>[[${order.address}]]， [[${order.post}]]， [[${order.receiver}]]， [[${order.mobile}]]</td>
+      </tr>
+      <tr>
+        <td>付款时间：</td>
+        <td>[[${#dates.format(order.payDate, 'yyyy-MM-dd HH:mm:ss')}]]</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="confirmPayButtonDiv">
+    <div class="confirmPayWarning">请收到货后，再确认收货！否则您可能钱货两空！</div>
+    <a th:href="@{/foreReceivedSuccess(oid=${order.id})}"><button class="confirmPayButton">确认收货</button></a>
+  </div>
+</div>

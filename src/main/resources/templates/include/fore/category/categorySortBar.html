@@ -1,0 +1,77 @@
+<!--suppress ALL-->
+<!-- 分类页面中的排序条 -->
+<div th:fragment="html">
+    <script>
+        $(function(){
+            $("input.sortBarPrice").keyup(function(){
+                var num= $(this).val();
+                if(num.length == 0){
+                    $("div.productUnit1").show();
+                    return;
+                }
+
+                num = parseInt(num);
+                if(isNaN(num))
+                    num = 1;
+                if(num <= 0)
+                    num = 1;
+                $(this).val(num);
+
+                var begin = parseInt($("input.beginPrice").val());
+                var end = parseInt($("input.endPrice").val());
+                if(!isNaN(begin) && !isNaN(end)){
+                    //先将当前分类页面所有的产品都隐藏起来
+                    $("div.productUnit1").hide();
+                    $("div.productUnit1").each(function(){
+                        var price = $(this).attr("price");
+                        //将一个数字格式的字符串转化成对应的数字
+                        price = new Number(price);
+                        //只显示价格处于查找区间的产品
+                        if(price>=begin && price<=end)
+                            $(this).show();
+                    });
+                }
+            });
+        });
+    </script>
+
+    <div class="categorySortBar">
+       <table class="categorySortBarTable categorySortTable">
+            <tr>
+                <td th:class="${'all' == sort or null == sort}? 'grayColumn' : ''">
+                    <a th:href="@{'?start='+${page.start} + '&sort=all'}">
+                        综合<span class="glyphicon glyphicon-arrow-down"></span>
+                    </a>
+                </td>
+                <td th:class="${'review' == sort}? 'grayColumn' : ''">
+                    <a th:href="@{'?start='+${page.start} + '&sort=review'}">
+                        人气<span class="glyphicon glyphicon-arrow-down"></span>
+                    </a>
+                </td>
+                <td th:class="${'date' == sort}? 'grayColumn' : ''">
+                    <a th:href="@{'?start='+${page.start} + '&sort=date'}">
+                        新品<span class="glyphicon glyphicon-arrow-down"></span>
+                    </a>
+                </td>
+                <td th:class="${'saleCount' == sort}? 'grayColumn' : ''">
+                    <a th:href="@{'?start='+${page.start} + '&sort=saleCount'}">
+                        销量<span class="glyphicon glyphicon-arrow-down"></span>
+                    </a>
+                </td>
+                <td th:class="${'price' == sort}? 'grayColumn' : ''">
+                    <a th:href="@{'?start='+${page.start} + '&sort=price'}">
+                        价格<span class="glyphicon glyphicon-resize-vertical"></span>
+                    </a>
+                </td>
+            </tr>
+        </table>
+
+        <table class="categorySortBarTable">
+            <tr>
+                <td><input class="sortBarPrice beginPrice" type="text" placeholder="请输入"></td>
+                <td class="grayColumn priceMiddleColumn">-</td>
+                <td><input class="sortBarPrice endPrice" type="text" placeholder="请输入"></td>
+            </tr>
+        </table>
+    </div>
+</div>

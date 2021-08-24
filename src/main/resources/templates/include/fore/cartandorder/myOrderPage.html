@@ -1,0 +1,191 @@
+
+
+<div id="html">
+  <script>
+    //变量deleteOrder用于记录我的订单页面中将要被删除的订单的状态，false表示是当前订单未被删除，true表示当前订单已被删除
+    var deleteOrder = false;
+    //变量deleteOrderid 用于记录被删除的订单的id
+    var deleteOrderid = 0;
+
+    $(function(){
+      //点击订单状态链接（所有订单、待付款、代发货、待收获、待评价），触发该事件
+      $("a[orderStatus]").click(function(){  //$("a[orderStatus]")是选择当前页面所有包含orderStatus属性的<a>元素
+        var orderStatus = $(this).attr("orderStatus");
+
+        //如果点击是所有订单链接，就显示所有的订单（不包括被删除的订单）
+        if("all" === orderStatus){
+          //显示当前页面所有yin属性值等于"no"的<table>元素
+          $("table[yin='no']").show();
+        }
+        else{
+          //如果点击是其它状态的链接，先将所有订单隐藏，再显示符合当前状态的订单
+          $("table[orderStatus]").hide();
+          $("table[orderStatus]").each(function () {
+            var os = $(this).attr("orderStatus");
+            var yin = $(this).attr("yin");
+            if (os === orderStatus && yin === "no")
+              $(this).show()
+          });
+        }
+
+        $("div.orderType div").removeClass("selectedOrderType");
+        $(this).parent("div").addClass("selectedOrderType");
+      });
+
+      //当删除订单链接被点击时，触发该事件
+      $("a.deleteOrderLink").click(function(){
+        deleteOrderid = $(this).attr("oid");
+        deleteOrder = false;
+        //显示删除模态框/窗口
+        $("#deleteConfirmModal").modal("show");
+      });
+
+      //删除模态框/窗口中的确认删除按钮被点击时，触发该事件
+      $("button.deleteConfirmButton").click(function(){
+        deleteOrder = true;
+        //当确认删除按钮被点击,隐藏删除模态框/窗口
+        $("#deleteConfirmModal").modal('hide');
+      });
+
+      //删除模态框/窗口被隐藏时，触发该事件
+      $("#deleteConfirmModal").on('hidden.bs.modal', function (e) {
+        if(deleteOrder){
+          //当删除模态框/窗口被隐藏，向后台发送异步请求，删除当前订单
+          $.post(
+                  "[[@{/foreDeleteOrder}]]",
+                  {"oid":deleteOrderid},
+                  function(result){
+                    if("success" === result){
+                      //删除成功，隐藏展示当前订单的table，即被删除的订单从我的订单页面中消失
+                      $("table.orderListItemTable[oid="+deleteOrderid+"]").hide();
+                      //隐藏展示当前订单的table后，再将该table的属性yin置为true
+                      $("table.orderListItemTable[oid="+deleteOrderid+"]").attr("yin", "yes");
+                    }
+                    else{
+                      location.href="[[@{/foreToLoginPage}]]";
+                    }
+                  }
+          );
+        }
+      });
+
+      //当催卖家发货按钮被点击时，触发该事件
+      $(".ask2delivery").click(function(){
+        //催卖家发货按钮被点击后，就立即隐藏
+        $(this).hide();
+
+        //向后台发送异步请求，对当前订单进行发货
+        $.get(
+          '[[@{/admin_order_delivery/' + $(this).attr("oid") + '}]]',
+          function (result) {
+            alert("卖家已秒发，刷新当前页面，即可进行确认收货")
+          }
+        );
+      });
+    });
+  </script>
+
+  <div class="boughtDiv">
+    <div class="orderType">
+      <div class="selectedOrderType"><a orderStatus="all" href="#null">所有订单</a></div>
+      <div><a orderStatus="waitPay" href="#null">待付款</a></div>
+      <div><a orderStatus="waitDelivery" href="#null">待发货</a></div>
+      <div><a orderStatus="waitConfirm" href="#null">待收货</a></div>
+      <div><a orderStatus="waitReview" href="#null">待评价</a></div>
+      <div><a orderStatus="finish" href="#null" class="noRightborder">交易完成</a></div>
+      <div class="orderTypeLastOne"><a class="noRightborder">&nbsp;</a></div>
+    </div>
+
+    <div style="clear:both"></div>
+
+    <div class="orderListTitle">
+      <table class="orderListTitleTable">
+        <tr>
+          <td>宝贝</td>
+          <td width="100px">单价</td>
+          <td width="100px">数量</td>
+          <td width="120px">实付款</td>
+          <td width="100px">交易操作</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="orderListItem">
+        <!-- 遍历所有的订单 -->
+        <!--class为orderListItemTable的<table>，用于展示一个订单-->
+        <table class="orderListItemTable" th:each="order : ${orders}" th:orderStatus="${order.status}" th:oid="${order.id}" yin="no">
+          <tr class="orderListItemFirstTR">
+            <td colspan="2">
+              <b>[[${#dates.format(order.createDate, 'yyyy-MM-dd HH:mm:ss')}]]</b>
+              <span>订单号: [[${order.orderCode}]]</span>
+            </td>
+            <td  colspan="2"><img width="13px" th:src="@{/img/site/orderItemTmall.png}">天猫商场</td>
+            <td colspan="1">
+              <a class="wangwanglink" href="#null">
+                <div class="orderItemWangWangGif"></div>
+              </a>
+            </td>
+            <td class="orderItemDeleteTD">
+              <a class="deleteOrderLink" th:oid="${order.id}" href="#null">
+                <span class="orderListItemDelete glyphicon glyphicon-trash"></span>
+              </a>
+            </td>
+          </tr>
+          <!-- 遍历当前订单包含的所有订单项 -->
+          <tr class="orderItemProductInfoPartTR" th:each="oi,st : ${order.orderItems}">
+            <td class="orderItemProductInfoPartTD"><img width="80" height="80" th:if="${oi.product.firstProductImage != null}" th:src="@{'/img/productimage/single_middle/'+${oi.product.firstProductImage.id}+'.jpg'}"></td>
+            <td class="orderItemProductInfoPartTD" >
+              <div class="orderListItemProductLinkOutDiv">
+                <a th:href="@{'/foreProduct/' + ${oi.product.id}}" th:text="${oi.product.name}"></a>
+                <div class="orderListItemProductLinkInnerDiv">
+                  <img th:src="@{/img/site/creditcard.png}" title="支持信用卡支付">
+                  <img th:src="@{/img/site/7day.png}" title="消费者保障服务,承诺7天退货">
+                  <img th:src="@{/img/site/promise.png}" title="消费者保障服务,承诺如实描述">
+                </div>
+              </div>
+            </td>
+            <td class="orderItemProductInfoPartTD" width="100px">
+              <div class="orderListItemProductOriginalPrice">￥[[${#numbers.formatDecimal(oi.product.originalPrice,1,'COMMA',2,'POINT')}]]</div>
+              <div class="orderListItemProductPrice">￥[[${#numbers.formatDecimal(oi.product.promotePrice,1,'COMMA',2,'POINT')}]]</div>
+            </td>
+            <td class="orderItemProductInfoPartTD" width="100px" align="center">
+              <span class="orderListItemNumber" th:text="${oi.number}"></span>
+            </td>
+            <div th:if="${st.count == 1}">
+              <td valign="top" th:rowspan="${#lists.size(order.orderItems)}" width="120px" class="orderListItemProductRealPriceTD orderItemOrderInfoPartTD">
+                <div class="orderListItemProductRealPrice">￥[[${#numbers.formatDecimal(order.total,1,'COMMA',2,'POINT')}]]</div>
+                <div class="orderListItemPriceWithTransport">(含运费：￥0.00)</div>
+              </td>
+              <td th:if="${order.status == 'waitConfirm'}" valign="top" th:rowspan="${#lists.size(order.orderItems)}" class="orderListItemButtonTD orderItemOrderInfoPartTD" width="100px">
+                <a th:href="@{'/foreConfirmReceipt/' + ${order.id}}">
+                  <button class="orderListItemConfirm">确认收货</button>
+                </a>
+              </td>
+              <td th:if="${order.status == 'waitPay'}" valign="top" th:rowspan="${#lists.size(order.orderItems)}" class="orderListItemButtonTD orderItemOrderInfoPartTD" width="100px">
+                <a th:href="@{/foreToConfirmPaymentPage(oid=${order.id},total=${order.total})}">
+                  <button class="orderListItemConfirm">付款</button>
+                </a>
+              </td>
+              <td th:if="${order.status == 'waitDelivery'}" valign="top" th:rowspan="${#lists.size(order.orderItems)}" class="orderListItemButtonTD orderItemOrderInfoPartTD" width="100px">
+                <span>待发货</span>
+               <!-- <button class="btn btn-info btn-sm ask2delivery" th:oid="${o.id}">催卖家发货</button>-->
+              </td>
+              <td th:if="${order.status == 'finish'}" valign="top" th:rowspan="${#lists.size(order.orderItems)}" class="orderListItemButtonTD orderItemOrderInfoPartTD" width="100px">
+                <span>交易完成</span>
+              </td>
+            </div>
+            <div th:if="${order.status == 'waitReview'}">
+              <td th:if="${oi.reviewStatus == 'no'}" class="orderItemProductInfoPartTD" width="100px" align="center">
+                <a th:href="@{/foreReview(oid=${order.id},pid=${oi.pid},oiid=${oi.id})}">
+                  <button class="orderListItemReview">评价</button>
+                </a>
+              </td>
+              <td th:if="${oi.reviewStatus == 'yes'}" class="orderItemProductInfoPartTD" width="100px" align="center">
+                <span>已评价</span>
+              </td>
+            </div>
+          </tr>
+        </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<title>编辑产品</title>
+<head th:replace="common/adminCommon :: adminHeader"></head>
+<body>
+<div th:replace="common/adminCommon :: adminNavigator"></div>
+
+<script>
+  $(function() {
+    $("#editForm").submit(function() {
+      if (!checkEmpty("name", "产品名称"))
+        return false;
+      //在编辑产品时，产品的小标题可以为空
+      //          if (!checkEmpty("subTitle", "小标题"))
+      //              return false;
+      //输入的原价和优惠价格必须是数字
+      if (!checkNumber("originalPrice", "原价格"))
+        return false;
+      if (!checkNumber("promotePrice", "优惠价格"))
+        return false;
+      //输入的库存必须是整型
+      if (!checkInt("stock", "库存"))
+        return false;
+      return true;
+    });
+  });
+</script>
+
+<div class="workingArea">
+  <ol class="breadcrumb">
+    <li><a th:href="@{/admin_category_list}">所有分类</a></li>
+    <li><a th:text="${product.category.name}" th:href="@{/admin_product_list/{cid}(cid=${product.category.id})}"></a></li>
+    <li th:text="${product.name}" class="active"></li>
+    <li class="active">编辑产品</li>
+  </ol>
+
+  <div class="panel panel-warning editDiv">
+    <div class="panel-heading">编辑产品</div>
+    <div class="panel-body">
+      <form id="editForm" th:action="@{/admin_product_update}" method="post">
+        <table class="editTable">
+          <tr>
+            <td>产品名称</td>
+            <td><input id="name" name="name" th:value="${product.name}"
+                       type="text" class="form-control"></td>
+          </tr>
+          <tr>
+            <td>产品小标题</td>
+            <td><input id="subTitle" name="subTitle" type="text"
+                       th:value="${product.subTitle}"
+                       class="form-control"></td>
+          </tr>
+          <tr>
+            <td>原价格</td>
+            <td><input id="originalPrice" th:value="${product.originalPrice}" name="originalPrice" type="text"
+                       class="form-control"></td>
+          </tr>
+          <tr>
+            <td>优惠价格</td>
+            <td><input id="promotePrice"  th:value="${product.promotePrice}" name="promotePrice" type="text"
+                       class="form-control"></td>
+          </tr>
+          <tr>
+            <td>库存</td>
+            <td><input id="stock"  th:value="${product.stock}" name="stock" type="text"
+                       class="form-control"></td>
+          </tr>
+
+          <tr class="submitTR">
+            <td colspan="2" align="center">
+              <input type="hidden" name="id" th:value="${product.id}">
+              <input type="hidden" name="cid" th:value="${product.category.id}">
+              <input type="hidden" name="start" th:value="${param.start}">
+              <button type="submit" class="btn btn-success">提 交</button></td>
+          </tr>
+        </table>
+      </form>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

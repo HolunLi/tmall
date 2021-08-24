@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<title>天猫tmall.com--理想生活上天猫</title>
+<head th:replace="common/foreCommon :: foreHeader"></head>
+<body>
+    <div id="workingArea">
+      <div th:replace="common/foreCommon :: foreNavigator"></div>
+      <div th:replace="common/foreCommon :: search"></div>
+      <!-- 分类业务页面 -->
+      <div th:replace="include/fore/category/categoryPage :: #html"></div>
+      <div th:replace="common/foreCommon :: footer"></div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,13 @@
+<!--suppress ALL-->
+<!-- 产品业务页面 -->
+<div id="html">
+  <div class="categoryPictureInProductPageDiv">
+    <img class="categoryPictureInProductPage" th:src="@{'/img/category/'+${product.category.id}+'.jpg'}">
+  </div>
+
+  <div class="productPageDiv">
+    <div th:replace="include/fore/product/imgAndInfo :: #html"></div>
+    <div th:replace="include/fore/product/productReview :: #html"></div>
+    <div th:replace="include/fore/product/productDetail :: #html"></div>
+  </div>
+</div>

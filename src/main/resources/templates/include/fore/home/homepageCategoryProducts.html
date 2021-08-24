@@ -1,0 +1,28 @@
+<!--suppress ALL-->
+
+<div class="homepageCategoryProducts" id="html">
+    <!-- 遍历所有的分类,但只显示前100个分类 -->
+    <div class="eachHomepageCategoryProducts" th:each="category,stc : ${categories}" th:if="${stc.count <= 100}">
+        <div class="left-mark"></div>
+        <span th:text="${category.name}" class="categoryTitle"></span>
+        <br>
+        <!-- 遍历当前分类的所有产品,只选出前5个产品，放到前台首页中显示 -->
+        <div class="productItem" th:each="product,stp : ${category.products}" th:if="${stp.count <= 5}">
+            <a th:href="@{'/foreProduct/' + ${product.id}}">
+                <img width="100px" th:if="${product.firstProductImage != null}" th:src="@{'/img/productimage/single_middle/'+${product.firstProductImage.id}+'.jpg'}">
+                <img width="100px" th:if="${product.firstProductImage == null}" th:src="@{/img/site/picturenotfound.jpg}">
+            </a>
+            <a class="productItemDescLink" th:href="@{'/foreProduct/' + ${product.id}}">
+                <span class="productItemDesc">
+                    [热销][[${#strings.length(product.name) >= 20? #strings.substring(product.name,0,20) : product.name}]]
+                </span>
+            </a>
+            <span class="productPrice">
+                [[${#numbers.formatDecimal(product.promotePrice,1,'COMMA',2,'POINT')}]]
+            </span>
+        </div>
+        <div style="clear:both"></div>
+    </div>
+
+    <img id="endpng" class="endpng" th:src="@{/img/site/end.png}">
+</div>

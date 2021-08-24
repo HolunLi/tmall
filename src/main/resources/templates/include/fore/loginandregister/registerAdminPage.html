@@ -1,0 +1,91 @@
+
+<div id="html">
+  <script>
+    $(function(){
+      $("#registerButton").click(function () {
+        if(0==$("#name").val().length){
+          $("span.errorMessage").html("请输入登录名");
+          $("div.registerErrorMessageDiv").css("visibility","visible");
+          $("div.registerErrorMessageDiv").show();
+          return false;
+        }
+        if(0==$("#password").val().length){
+          $("span.errorMessage").html("请输入密码");
+          $("div.registerErrorMessageDiv").css("visibility","visible");
+          $("div.registerErrorMessageDiv").show();
+          return false;
+        }
+        if(0==$("#repeatpassword").val().length){
+          $("span.errorMessage").html("请输入重复密码");
+          $("div.registerErrorMessageDiv").css("visibility","visible");
+          $("div.registerErrorMessageDiv").show();
+          return false;
+        }
+        if($("#password").val() !=$("#repeatpassword").val()){
+          $("span.errorMessage").html("重复密码不一致");
+          $("div.registerErrorMessageDiv").css("visibility","visible");
+          $("div.registerErrorMessageDiv").show();
+          return false;
+        }
+        $.post(
+                "[[@{/foreRegister}]]",
+                {
+                  name:$("#name").val(),
+                  pwd:$("#password").val(),
+                  role:$("#role").val()
+                },
+                function (result) {
+                  if ("success" === result)
+                    location.href = "[[@{/foreToRegisterSuccessPage}]]";
+                  else {
+                    $("span.errorMessage").html("登录名已经被使用,不能使用");
+                    $("div.registerErrorMessageDiv").css("visibility","visible");
+                    $("div.registerErrorMessageDiv").show();
+                  }
+                }
+        )
+      });
+
+      $("input").keyup(function () {
+        $("div.registerErrorMessageDiv").hide();
+      });
+    });
+  </script>
+
+  <div class="registerDiv">
+    <div class="registerErrorMessageDiv">
+      <div class="alert alert-danger" role="alert">
+        <span class="errorMessage"></span>
+      </div>
+    </div>
+
+    <table class="registerTable">
+      <tr>
+        <td  class="registerTip registerTableLeftTD">设置管理员名</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="registerTableLeftTD">登陆名</td>
+        <td  class="registerTableRightTD"><input id="name" name="name" placeholder="登录名一旦设置成功，无法修改" > </td>
+      </tr>
+      <tr>
+        <td  class="registerTip registerTableLeftTD">设置管理员密码</td>
+        <td  class="registerTableRightTD">登陆时验证，保护账号信息</td>
+      </tr>
+      <tr>
+        <td class="registerTableLeftTD">登陆密码</td>
+        <td class="registerTableRightTD"><input id="password" name="pwd" type="password"  placeholder="设置你的登陆密码" > </td>
+      </tr>
+      <tr>
+        <td class="registerTableLeftTD">密码确认</td>
+        <td class="registerTableRightTD"><input id="repeatpassword" type="password"  placeholder="请再次输入你的密码" > </td>
+      </tr>
+      <tr><td colspan="2"><input type="hidden" id="role" value="administrator"></td></tr>
+      <tr>
+        <td colspan="2" class="registerButtonTD">
+          <a><button id="registerButton" type="submit">提   交</button></a>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

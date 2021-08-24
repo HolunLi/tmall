@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>注册成功</title>
+<head th:replace="common/foreCommon :: foreHeader" ></head>
+<body>
+    <div id="workingArea">
+        <div th:replace="common/foreCommon :: foreNavigator" ></div>
+        <div th:replace="common/foreCommon :: simpleSearch" ></div>
+        <!--注册成功业务页面-->
+        <div th:replace="include/fore/loginandregister/registerSuccessPage :: #html" ></div>
+        <div th:replace="common/foreCommon :: footer" ></div>
+    </div>
+</body>
+</html>

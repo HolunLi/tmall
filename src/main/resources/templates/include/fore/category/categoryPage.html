@@ -1,0 +1,9 @@
+<!--suppress ALL-->
+<!-- 分类业务页面 -->
+<div id="html">
+  <div align="center" class="categoryPageDiv">
+    <img th:src="@{'/img/category/'+${cid}+'.jpg'}">
+    <div th:replace="include/fore/category/categorySortBar :: html"></div>
+    <div th:replace="include/fore/category/productsByCategory :: html"></div>
+  </div>
+</div>

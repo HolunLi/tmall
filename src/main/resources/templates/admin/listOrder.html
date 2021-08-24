@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<title>订单管理</title>
+<head th:replace="common/adminCommon :: adminHeader"></head>
+<body>
+<div th:replace="common/adminCommon :: adminNavigator"></div>
+
+<script>
+    $(function(){
+        //当显示详情按钮被点击后，显示当前订单包含的所有订单项
+        $("button#orderPageCheckOrderItems").click(function(){
+            var oid = $(this).attr("oid");
+            //使用jQuery中的toggle()方法来切换 hide() 和 show() 方法, 实现显示被隐藏的元素，或隐藏已显示的元素：
+            $("tr.orderPageOrderItemTR[oid="+oid+"]").toggle();
+        });
+    });
+</script>
+
+<div class="workingArea">
+    <h1 class="label label-info" >订单管理</h1>
+    <br>
+    <br>
+
+    <div class="listDataTableDiv">
+        <table class="table table-striped table-bordered table-hover1  table-condensed">
+            <thead>
+            <tr class="success">
+                <th>ID</th>
+                <th>状态</th>
+                <th>金额</th>
+                <th width="100px">商品数量</th>
+                <th width="100px">买家名称</th>
+                <th>创建时间</th>
+                <th>支付时间</th>
+                <th>发货时间</th>
+                <th>确认收货时间</th>
+                <th width="120px">操作</th>
+            </tr>
+            </thead>
+            <tbody th:each="order : ${orders}">
+                <tr>
+                    <td th:text="${order.id}"></td>
+                    <td th:text="${order.statusDesc}"></td>
+                    <td>￥[[${#numbers.formatDecimal(order.total,1,2)}]]</td>
+                    <td th:text="${order.totalNumber}" align="center"></td>
+                    <td th:text="${order.user.name}" align="center"></td>
+                    <td th:text="${#dates.format(order.createDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${#dates.format(order.payDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${#dates.format(order.deliveryDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${#dates.format(order.confirmDate, 'yyyy-MM-dd HH:mm:ss')}" ></td>
+                    <td>
+                        <button th:oid="${order.id}" id="orderPageCheckOrderItems" class="btn btn-primary btn-xs" >查看详情</button>
+                        <!-- 如果当前订单的状态为待发货，显示发货按钮 -->
+                            <a th:if="${order.status eq 'waitDelivery'}" th:href="@{/admin_order_delivery(id=${order.id})}">
+                                <button class="btn btn-primary btn-xs">发货</button>
+                            </a>
+                    </td>
+                </tr>
+
+                <!-- 点击查看详情按钮后，才会出现当前订单包含的所有订单项 -->
+                <tr class="orderPageOrderItemTR" th:oid="${order.id}" >
+                    <td colspan="10" align="center">
+                        <div class="orderPageOrderItem">
+                            <table width="800px" align="center" class="orderPageOrderItemTable">
+                                <tr th:each="orderItem : ${order.orderItems}">
+                                    <td align="left">
+                                        <img width="40px" height="40px" th:src="@{/img/productimage/single/{id}.jpg(id=${orderItem.product.firstProductImage.id})}">
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/foreProduct/{pid}(pid=${orderItem.pid})}">
+                                            <span th:text="${orderItem.product.name}"></span>
+                                        </a>
+                                    </td>
+                                    <td align="right">
+                                        <span class="text-muted">[[${orderItem.number}]]个</span>
+                                    </td>
+                                    <td align="right">
+                                        <span class="text-muted">单价：￥[[${#numbers.formatDecimal(orderItem.product.promotePrice,1,2)}]]</span>
+                                    </td>
+                                </tr>
+                                <tr th:if="${order.userMessage.length() != 0}">
+                                    <td><strong>留言</strong></td>
+                                    <td colspan="3">
+                                        <textarea style="width: 440px;height: 100px" th:text="${order.userMessage}"></textarea>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:replace="common/adminCommon :: adminPage"></div>
+
+</div>
+
+</body>
+</html>

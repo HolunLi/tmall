@@ -1,0 +1,73 @@
+<!--suppress ALL-->
+
+<div id="html" class="reviewDiv">
+  <div class="reviewProductInfoDiv">
+    <div class="reviewProductInfoImg"><img width="400px" height="400px" th:src="@{'/img/productimage/single/'+${product.firstProductImage.id}+'.jpg'}"></div>
+    <div class="reviewProductInfoRightDiv">
+      <div class="reviewProductInfoRightText">
+        <a style="color: black" th:href="@{'/foreProduct/'+${product.id}}" th:text="${product.name}"></a>
+      </div>
+
+      <table class="reviewProductInfoTable">
+        <tr>
+          <td width="75px">价格:</td>
+          <td><span class="reviewProductInfoTablePrice">￥[[${#numbers.formatDecimal(product.originalPrice,1,'COMMA',2,'POINT')}]]</span> 元 </td>
+        </tr>
+        <tr>
+          <td>配送</td>
+          <td>快递:  0.00</td>
+        </tr>
+        <tr>
+          <td>月销量:</td>
+          <td><span class="reviewProductInfoTableSellNumber" th:text="${product.saleCount}"></span> 件</td>
+        </tr>
+      </table>
+
+      <div class="reviewProductInfoRightBelowDiv">
+        <span class="reviewProductInfoRightBelowImg"><img1 th:src="@{/img/site/reviewLight.png}" /></span>
+        <span class="reviewProductInfoRightBelowText" >现在查看的是 您所购买商品的信息
+                于[[${#dates.format(order.createDate, 'yyyy年MM月dd')}]]下单购买了此商品 </span>
+      </div>
+    </div>
+    <div style="clear:both"></div>
+  </div>
+
+  <div class="reviewStasticsDiv">
+    <div class="reviewStasticsLeft">
+      <div class="reviewStasticsLeftTop"></div>
+      <div class="reviewStasticsLeftContent">累计评价 <span class="reviewStasticsNumber" th:text="${product.reviewCount}"></span></div>
+      <div class="reviewStasticsLeftFoot"></div>
+    </div>
+    <div class="reviewStasticsRight">
+      <div class="reviewStasticsRightEmpty"></div>
+      <div class="reviewStasticsFoot"></div>
+    </div>
+  </div>
+
+  <!-- 只有在评价过后，才能查看当前产品的评价 -->
+    <div class="reviewDivlistReviews" th:if="${param.showonly != null}">
+        <div class="reviewDivlistReviewsEach" th:each="review : ${reviews}">
+          <div class="reviewDate">[[${#dates.format(review.createDate, 'yyyy-MM-dd')}]]</div>
+          <div class="reviewContent">[[${review.content}]]</div>
+          <div class="reviewUserInfo pull-right">[[${review.user.anonymousName}]]<span class="reviewUserInfoAnonymous">(匿名)</span></div>
+        </div>
+    </div>
+
+    <div class="makeReviewDiv" th:if="${param.showonly == null}">
+      <form method="post" th:action="@{/foreDoReview}">
+        <div class="makeReviewText">其他买家，需要你的建议哦！</div>
+        <table class="makeReviewTable">
+          <tr>
+            <td class="makeReviewTableFirstTD">评价商品</td>
+            <td><textarea name="content"></textarea></td>
+          </tr>
+        </table>
+        <div class="makeReviewButtonDiv">
+          <input type="hidden" name="oid" th:value="${order.id}">
+          <input type="hidden" name="pid" th:value="${product.id}">
+          <input type="hidden" name="oiid" th:value="${param.oiid}">
+          <button type="submit">提交评价</button>
+        </div>
+      </form>
+    </div>
+</div>

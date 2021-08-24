@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<title>编辑属性</title>
+<head th:replace="common/adminCommon :: adminHeader"></head>
+<body>
+<div th:replace="common/adminCommon :: adminNavigator"></div>
+
+<script>
+  $(function() {
+    $("#editForm").submit(function() {
+      if (checkEmpty("name", "属性名称"))
+        return true;
+      return false;
+    });
+  });
+</script>
+
+<div class="workingArea">
+  <ol class="breadcrumb">
+    <li><a th:href="@{/admin_category_list}">所有分类</a></li>
+    <li><a th:text="${property.category.name}" th:href="@{/admin_property_list/{cid}(cid=${property.category.id})}"></a></li>
+    <li class="active">编辑属性</li>
+  </ol>
+
+  <div class="panel panel-warning editDiv">
+    <div class="panel-heading">编辑属性</div>
+    <div class="panel-body">
+      <form method="post" id="editForm" th:action="@{/admin_property_update}">
+        <table class="editTable">
+          <tr>
+            <td>属性名称</td>
+            <td><input id="name" name="name" th:value="${property.name}"
+                       type="text" class="form-control"></td>
+          </tr>
+          <tr class="submitTR">
+            <td colspan="2" align="center">
+              <input type="hidden" name="id" th:value="${property.id}">
+              <input type="hidden" name="cid" th:value="${property.category.id}">
+              <input type="hidden" name="start" th:value="${param.start}">
+              <button type="submit" class="btn btn-success">提 交</button></td>
+          </tr>
+        </table>
+      </form>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

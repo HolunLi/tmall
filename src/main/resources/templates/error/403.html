@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>页面无权限-403</title>
+    <link rel="icon" th:href="@{/img/icon/favicon.ico}" type="image/x-icon" />
+    <style type="text/css">
+        div {
+            text-align:center;
+            font-size:16px;
+            line-height:30px;
+            color:#333333;
+        }
+        a {
+            text-align:center;
+            color:#333; font-size:13px;
+            text-decoration:none; width:100px;
+            height:32px; line-height:32px;
+            border:1px solid #E3E2E8;
+            display:block; margin:30px auto;
+        }
+    </style>
+</head>
+<body>
+<div class="newContent">
+    <p><br/></p><p><br/></p><p><br/></p>
+    <p style="text-align:center;"><img th:src="@{/img/error/pageNotFound.png}"></p>
+    <div>很抱歉，您没有访问此页面的权限！</div>
+    <a th:href="@{/foreHome}">返回首页</a>
+</div>
+</body>
+</html>
