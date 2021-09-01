@@ -242,8 +242,8 @@ public class ForeController {
         return "fore/paymentSuccess";
     }
 
-    @GetMapping("/foreConfirmReceipt/{oid}")
-    public String confirmReceipt(@PathVariable("oid")int oid, Model model) {
+    @GetMapping("/foreConfirmReceipt")
+    public String confirmReceipt(int oid, Model model) {
         Order order = orderService.queryOrderById(oid);
         model.addAttribute("order", order);
 

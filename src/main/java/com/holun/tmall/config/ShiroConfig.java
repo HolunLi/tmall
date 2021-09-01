@@ -62,7 +62,7 @@ public class ShiroConfig {
         filterMap.put("/foreCreateOrder", "authc");
         filterMap.put("/foreToConfirmPaymentPage", "authc");
         filterMap.put("/forePaymentSuccess", "authc");
-        filterMap.put("/foreConfirmReceipt/*", "authc");
+        filterMap.put("/foreConfirmReceipt", "authc");
         filterMap.put("/foreReceivedSuccess", "authc");
         filterMap.put("/foreReview", "authc");
         filterMap.put("/foreDoReview", "authc");

@@ -1,4 +1,4 @@
-
+<!--suppress ALL-->
 
 <div id="html">
   <script>
@@ -157,7 +157,7 @@
                 <div class="orderListItemPriceWithTransport">(含运费：￥0.00)</div>
               </td>
               <td th:if="${order.status == 'waitConfirm'}" valign="top" th:rowspan="${#lists.size(order.orderItems)}" class="orderListItemButtonTD orderItemOrderInfoPartTD" width="100px">
-                <a th:href="@{'/foreConfirmReceipt/' + ${order.id}}">
+                <a th:href="@{/foreConfirmReceipt(oid=${order.id})}">
                   <button class="orderListItemConfirm">确认收货</button>
                 </a>
               </td>
