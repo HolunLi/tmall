@@ -16,6 +16,12 @@ spring:
       content-type: text/html
     mode: HTML
     encoding: UTF-8
+  servlet:
+    multipart:
+      #上传的单个文件大小，最大不能超过10MB
+      max-file-size: 10MB
+      #一次请求过程中上传的所有文件总的大小，最大不能超过100MB
+      max-request-size: 100MB
 
   datasource:
     username: root
